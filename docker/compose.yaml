@@ -1,6 +1,8 @@
 services:
   telegram-server-checker:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     container_name: telegram-server-checker
     restart: unless-stopped
     env_file: .env
