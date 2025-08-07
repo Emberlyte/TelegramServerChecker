@@ -1,0 +1,20 @@
+services:
+  telegram-server-checker:
+    build: .
+    container_name: telegram-server-checker
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - ADMIN_USER_ID=${ADMIN_USER_ID}
+      - SCRIPTS_DIR=${SCRIPTS_DIR}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/app/logs
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
