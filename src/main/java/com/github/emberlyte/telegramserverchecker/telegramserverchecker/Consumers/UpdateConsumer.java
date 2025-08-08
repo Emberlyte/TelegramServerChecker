@@ -55,13 +55,32 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
         }
 
         try {
+            log.info("Новое сообщение: {}. ChatId: {}", text, chatId);
             switch (text) {
                 case "/start" -> sendMessage(chatId, "Привет!");
                 case "/script" -> executeFail2BanScript(chatId);
+                case "/ping" -> {
+                    Long current = System.currentTimeMillis();
+                    checkPing(chatId, current);
+                }
                 default -> sendMessage(chatId, "а");
             }
         } catch (Exception e) {
             log.error("Ошибка при отправке команды: {}", e.getMessage(), e);
+        }
+    }
+
+    private void checkPing(Long chatId, Long current) {
+        try {
+            sendMessage(chatId, "pong");
+
+            long present = System.currentTimeMillis();
+            long result = present - current;
+
+            sendMessage(chatId, "Пинг сервера: " + result);
+            log.info("Пинг: {}", result);
+        } catch (Exception e) {
+            log.error("Ошибка при выполнении пинга. Ошибка: {}", e.getMessage(), e);
         }
     }
 
@@ -119,7 +138,6 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
 
         try {
             telegramClient.execute(message);
-            log.info("Новое сообщение от: {}. В: {}", text, chatId);
         } catch (Exception e) {
             log.error("Ошибка при отправке сообщения: {}", e.getMessage(), e);
         }
