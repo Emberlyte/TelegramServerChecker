@@ -58,7 +58,10 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
             log.info("Новое сообщение: {}. ChatId: {}", text, chatId);
             switch (text) {
                 case "/start" -> sendMessage(chatId, "Привет!");
-                case "/script" -> executeFail2BanScript(chatId);
+                case "/script" -> executeScript(chatId, "monitor.sh");
+                case "/ram" -> executeScript(chatId, "ram.sh");
+                case "/cpu" -> executeScript(chatId, "cpu.sh");
+                case "/hdd" -> executeScript(chatId, "hdd");
                 case "/ping" -> {
                     Long current = System.currentTimeMillis();
                     checkPing(chatId, current);
@@ -84,18 +87,19 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
         }
     }
 
-    private void executeFail2BanScript(Long chatId) {
+    private void executeScript(Long chatId, String scriptName) {
         try {
-            String filePath = scriptsDir + "monitor.sh";
+            String filePath = scriptsDir + scriptName;
             File scriptFile = new File(filePath);
 
             if (!scriptFile.exists() || !scriptFile.canExecute()) {
-                sendMessage(chatId, "Ошибка: Скрипт 'monitor.sh' не найден или не имеет прав на выполнение.");
+                sendMessage(chatId, "Ошибка: Скрипт не найден или не имеет прав на выполнение.");
                 log.error("Скрипт не найден или не исполняем: {}", filePath);
                 return;
             }
 
-            ProcessBuilder processBuilder = new ProcessBuilder("sudo", "/bin/bash", scriptFile.getAbsolutePath());
+
+            ProcessBuilder processBuilder = new ProcessBuilder(filePath);
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
 
