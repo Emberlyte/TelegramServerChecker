@@ -61,7 +61,7 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
                 case "/script" -> executeScript(chatId, "monitor.sh");
                 case "/ram" -> executeScript(chatId, "ram.sh");
                 case "/cpu" -> executeScript(chatId, "cpu.sh");
-                case "/hdd" -> executeScript(chatId, "hdd");
+                case "/hdd" -> executeScript(chatId, "hdd.sh");
                 case "/ping" -> {
                     Long current = System.currentTimeMillis();
                     checkPing(chatId, current);
